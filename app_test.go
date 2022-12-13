@@ -3,14 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/sivalabs-bookstore/payment-service-go/config"
 	"github.com/sivalabs-bookstore/payment-service-go/payments"
 	pgtc "github.com/sivalabs-bookstore/payment-service-go/test"
 	"github.com/stretchr/testify/assert"
-	testcontainers "github.com/testcontainers/testcontainers-go"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -25,13 +23,12 @@ var router *mux.Router
 func TestMain(m *testing.M) {
 	//Common Setup
 	ctx := context.Background()
-	pgContainer, terminateContainerFn, err := pgtc.SetupTestDatabase(ctx)
+	pgContainer, err := pgtc.SetupPostgres(ctx)
 	if err != nil {
-		log.Error("failed to setup Postgres container")
-		panic(err)
+		log.Fatalf("failed to setup Postgres container")
 	}
-	defer terminateContainerFn()
-	overrideEnv(ctx, pgContainer)
+	defer pgContainer.CloseFn()
+	overrideEnv(pgContainer)
 
 	cfg = config.GetConfig()
 	app = NewApp(cfg)
@@ -43,15 +40,12 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func overrideEnv(ctx context.Context, pgContainer testcontainers.Container) {
-	host, _ := pgContainer.Host(ctx)
-	p, _ := pgContainer.MappedPort(ctx, "5432/tcp")
-	port := p.Int()
-	os.Setenv("APP_DB_HOST", host)
-	os.Setenv("APP_DB_PORT", fmt.Sprint(port))
-	os.Setenv("APP_DB_USERNAME", pgtc.PostgresTestUserName)
-	os.Setenv("APP_DB_PASSWORD", pgtc.PostgresTestPassword)
-	os.Setenv("APP_DB_NAME", pgtc.PostgresTestDatabase)
+func overrideEnv(pgContainer *pgtc.PostgresContainer) {
+	os.Setenv("APP_DB_HOST", pgContainer.Host)
+	os.Setenv("APP_DB_PORT", pgContainer.Port)
+	os.Setenv("APP_DB_USERNAME", pgContainer.Username)
+	os.Setenv("APP_DB_PASSWORD", pgContainer.Password)
+	os.Setenv("APP_DB_NAME", pgContainer.Database)
 	os.Setenv("APP_DB_RUN_MIGRATIONS", "true")
 }
 
