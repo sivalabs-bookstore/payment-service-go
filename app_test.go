@@ -8,19 +8,15 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/sivalabs-bookstore/payment-service-go/config"
 	"github.com/sivalabs-bookstore/payment-service-go/payments"
+	pgtc "github.com/sivalabs-bookstore/payment-service-go/test"
 	"github.com/stretchr/testify/assert"
 	testcontainers "github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 )
-
-const postgresTestUserName = "test"
-const postgresTestPassword = "test"
-const postgresTestDatabase = "test"
 
 var cfg config.AppConfig
 var app *App
@@ -29,13 +25,13 @@ var router *mux.Router
 func TestMain(m *testing.M) {
 	//Common Setup
 	ctx := context.Background()
-	pgC, terminateContainerFn, err := SetupTestDatabase(ctx)
+	pgContainer, terminateContainerFn, err := pgtc.SetupTestDatabase(ctx)
 	if err != nil {
 		log.Error("failed to setup Postgres container")
 		panic(err)
 	}
 	defer terminateContainerFn()
-	overrideEnv(ctx, pgC)
+	overrideEnv(ctx, pgContainer)
 
 	cfg = config.GetConfig()
 	app = NewApp(cfg)
@@ -47,46 +43,15 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func SetupTestDatabase(ctx context.Context) (testcontainers.Container, func(), error) {
-	req := testcontainers.ContainerRequest{
-		Image: "postgres:15.0-alpine",
-		Env: map[string]string{
-			"POSTGRES_DB":       postgresTestDatabase,
-			"POSTGRES_USER":     postgresTestUserName,
-			"POSTGRES_PASSWORD": postgresTestPassword,
-		},
-		ExposedPorts: []string{"5432/tcp"},
-		WaitingFor:   wait.ForListeningPort("5432/tcp"),
-	}
-
-	pgC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: req,
-		Started:          true,
-	})
-	if err != nil {
-		panic(fmt.Sprintf("%v", err))
-	}
-	closeContainer := func() {
-		log.Info("terminating container")
-		err := pgC.Terminate(ctx)
-		if err != nil {
-			log.Errorf("error terminating postgres container: %s", err)
-			panic(fmt.Sprintf("%v", err))
-		}
-	}
-
-	return pgC, closeContainer, nil
-}
-
-func overrideEnv(ctx context.Context, pgC testcontainers.Container) {
-	host, _ := pgC.Host(ctx)
-	p, _ := pgC.MappedPort(ctx, "5432/tcp")
+func overrideEnv(ctx context.Context, pgContainer testcontainers.Container) {
+	host, _ := pgContainer.Host(ctx)
+	p, _ := pgContainer.MappedPort(ctx, "5432/tcp")
 	port := p.Int()
 	os.Setenv("APP_DB_HOST", host)
 	os.Setenv("APP_DB_PORT", fmt.Sprint(port))
-	os.Setenv("APP_DB_USERNAME", postgresTestUserName)
-	os.Setenv("APP_DB_PASSWORD", postgresTestPassword)
-	os.Setenv("APP_DB_NAME", postgresTestDatabase)
+	os.Setenv("APP_DB_USERNAME", pgtc.PostgresTestUserName)
+	os.Setenv("APP_DB_PASSWORD", pgtc.PostgresTestPassword)
+	os.Setenv("APP_DB_NAME", pgtc.PostgresTestDatabase)
 	os.Setenv("APP_DB_RUN_MIGRATIONS", "true")
 }
 
