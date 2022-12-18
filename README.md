@@ -16,3 +16,9 @@ $ air
 ```shell
 $ go test ./...
 ```
+
+* Linting
+```shell
+$ go install github.com/mgechev/revive@latest
+$ reevive
+```

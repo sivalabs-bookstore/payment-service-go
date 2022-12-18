@@ -31,7 +31,7 @@ func GetConfig() AppConfig {
 	}
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "8083"
+		port = "8082"
 		log.Printf("defaulting to port %s", port)
 	}
 
