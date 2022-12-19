@@ -4,12 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	migrate "github.com/golang-migrate/migrate/v4"
-	_ "github.com/lib/pq"
-	log "github.com/sirupsen/logrus"
-	"github.com/sivalabs-bookstore/payment-service-go/config"
-
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/config"
 )
 
 func GetDb(config config.AppConfig) *sql.DB {
@@ -29,8 +28,8 @@ func runMigrations(config config.AppConfig) {
 	sourceURL := config.DbMigrationsLocation
 	databaseURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		config.DbUserName, config.DbPassword, config.DbHost, config.DbPort, config.DbDatabase)
-	//log.Printf("DB Migration sourceURL: %s\n", sourceURL)
-	//log.Printf("DB Migration URL: %s\n", databaseURL)
+	log.Printf("DB Migration sourceURL: %s\n", sourceURL)
+	log.Printf("DB Migration URL: %s\n", databaseURL)
 	m, err := migrate.New(sourceURL, databaseURL)
 	if err != nil {
 		log.Fatalf("Database migration error: %v", err)

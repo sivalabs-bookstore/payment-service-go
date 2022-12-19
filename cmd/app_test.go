@@ -1,13 +1,13 @@
-package main
+package cmd
 
 import (
 	"context"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"github.com/sivalabs-bookstore/payment-service-go/config"
-	"github.com/sivalabs-bookstore/payment-service-go/payments"
-	pgtc "github.com/sivalabs-bookstore/payment-service-go/test"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/config"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/payments"
+	pgtc "github.com/sivalabs-bookstore/payment-service-go/testing"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"

@@ -1,12 +1,12 @@
-package main
+package cmd
 
 import (
 	"database/sql"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
-	"github.com/sivalabs-bookstore/payment-service-go/config"
-	"github.com/sivalabs-bookstore/payment-service-go/database"
-	"github.com/sivalabs-bookstore/payment-service-go/payments"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/config"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/database"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/payments"
 	"net/http"
 	"os"
 )

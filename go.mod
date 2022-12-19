@@ -3,7 +3,7 @@ module github.com/sivalabs-bookstore/payment-service-go
 go 1.19
 
 require (
-	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
+	github.com/docker/go-connections v0.4.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.4.0
@@ -36,7 +36,6 @@ require (
 	github.com/docker/docker v20.10.19+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.6.4 // indirect
 	github.com/docker/go v1.5.1-1.0.20160303222718-d30aec9fd63c // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-metrics v0.0.1 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect

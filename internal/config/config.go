@@ -20,11 +20,13 @@ type AppConfig struct {
 	DbMigrationsLocation string
 }
 
+const envFileLocation = ".env"
+
 func GetConfig() AppConfig {
-	if _, err := os.Stat(".env"); errors.Is(err, fs.ErrNotExist) {
+	if _, err := os.Stat(envFileLocation); errors.Is(err, fs.ErrNotExist) {
 		log.Infof(".env file doesn't exist")
 	} else {
-		err := godotenv.Load(".env")
+		err := godotenv.Load(envFileLocation)
 		if err != nil {
 			log.Warningf("Couldn't load environment variables from .env file")
 		}

@@ -3,14 +3,15 @@ package main
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"github.com/sivalabs-bookstore/payment-service-go/config"
+	"github.com/sivalabs-bookstore/payment-service-go/cmd"
+	"github.com/sivalabs-bookstore/payment-service-go/internal/config"
 	"net/http"
 	"time"
 )
 
 func main() {
 	cfg := config.GetConfig()
-	app := NewApp(cfg)
+	app := cmd.NewApp(cfg)
 
 	port := fmt.Sprintf(":%d", cfg.AppPort)
 	srv := &http.Server{
