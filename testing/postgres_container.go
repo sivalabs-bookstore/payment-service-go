@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const postgresImage = "postgres:15.0-alpine"
+const postgresImage = "postgres:15.2-alpine"
 const postgresPort = "5432"
 const postgresUserName = "postgres"
 const postgresPassword = "postgres"
