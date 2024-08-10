@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   payments-db:
-    image: postgres:15.2-alpine
+    image: postgres:16.4-alpine
     container_name: payments-db
     environment:
       - POSTGRES_USER=postgres
