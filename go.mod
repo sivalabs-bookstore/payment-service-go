@@ -3,7 +3,7 @@ module github.com/sivalabs-bookstore/payment-service-go
 go 1.20
 
 require (
-	github.com/docker/go-connections v0.4.0
+	github.com/docker/go-connections v0.5.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
